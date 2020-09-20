@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drone : MonoBehaviour {
-
+public class Drone : MonoBehaviour
+{
     public Transform leftwing;
     public Transform rightwing;
     public Transform verticalStab;
@@ -44,28 +44,32 @@ public class Drone : MonoBehaviour {
 
     void Awake()
     {      
-        Vector3[] relAirfoilPositions = {
-        new Vector3(-wingX, 0.0f, 0.0f),
-        new Vector3(wingX, 0.0f, 0.0f),
-        new Vector3(0.0f, 0.0f, tailSize)};
-        float[] masses = {
-        wingMass,
-        wingMass,
-        tailMass};
+        Vector3[] relAirfoilPositions =
+        {
+            new Vector3(-wingX, 0.0f, 0.0f),
+            new Vector3(wingX, 0.0f, 0.0f),
+            new Vector3(0.0f, 0.0f, tailSize)
+        };
+
+        float[] masses =
+        {
+            wingMass,
+            wingMass,
+            tailMass
+        };
 
         float Ixx = 0;
         float Iyy = 0;
         float Izz = 0;
+
         for (int i = 0; i < relAirfoilPositions.Length; i++)
         {
 
-            Ixx += masses[i] * (Mathf.Pow(relAirfoilPositions[i].y, 2) + Mathf
-                .Pow(relAirfoilPositions[i].z, 2));
-            Iyy += masses[i] * (Mathf.Pow(relAirfoilPositions[i].z, 2) + Mathf
-                .Pow(relAirfoilPositions[i].x, 2));
-            Izz += masses[i] * (Mathf.Pow(relAirfoilPositions[i].x, 2) + Mathf
-                .Pow(relAirfoilPositions[i].y, 2));
+            Ixx += masses[i] * (Mathf.Pow(relAirfoilPositions[i].y, 2) + Mathf.Pow(relAirfoilPositions[i].z, 2));
+            Iyy += masses[i] * (Mathf.Pow(relAirfoilPositions[i].z, 2) + Mathf.Pow(relAirfoilPositions[i].x, 2));
+            Izz += masses[i] * (Mathf.Pow(relAirfoilPositions[i].x, 2) + Mathf.Pow(relAirfoilPositions[i].y, 2));
         }
+
         this.inertiaTensor = new Vector3(Ixx, Iyy, Izz);
         this.mass = getMass();
     }
@@ -76,25 +80,23 @@ public class Drone : MonoBehaviour {
         mass += wingMass * 2;
         mass += tailMass;
         mass += engineMass;
+
         return mass;
     }
 
-    // Use this for initialization
     void Start () {
 		
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         leftwing.transform.localRotation = Quaternion.Euler(new Vector3(Mathf.Rad2Deg * leftWingInclination, 0, 0));
         rightwing.transform.localRotation = Quaternion.Euler(new Vector3(Mathf.Rad2Deg * rightWingInclination, 0, 0));
 
         verticalStab.transform.localRotation = Quaternion.Euler(new Vector3(0f,Mathf.Rad2Deg * verStabInclination, 90f));
         horizontalStab.transform.localRotation = Quaternion.Euler(new Vector3(Mathf.Rad2Deg * horStabInclination,0f,0f));
-
     }
 
-    //fixed Update for physics
     void FixedUpdate()
     {
         float h = Time.fixedDeltaTime;
@@ -123,33 +125,39 @@ public class Drone : MonoBehaviour {
      */
     Vector3 getTotalForce()
     {
-        Vector3[] relAirfoilPositions = {
-        new Vector3(-wingX, 0.0f, 0.0f),
-        new Vector3(wingX, 0.0f, 0.0f),
-        new Vector3(0.0f, 0.0f, tailSize),
-        new Vector3(0.0f, 0.0f, tailSize)};
+        Vector3[] relAirfoilPositions =
+        {
+            new Vector3(-wingX, 0.0f, 0.0f),
+            new Vector3(wingX, 0.0f, 0.0f),
+            new Vector3(0.0f, 0.0f, tailSize),
+            new Vector3(0.0f, 0.0f, tailSize)
+        };
 
-        Vector3[] axes = {
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(0.0f, 1.0f, 0.0f)};
+        Vector3[] axes =
+        {
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(0.0f, 1.0f, 0.0f)
+        };
 
-        Vector3[] attackVectors = {
-        new Vector3(0.0f, Mathf.Sin(this.leftWingInclination), -Mathf.Cos(this.leftWingInclination)),
-        new Vector3(0.0f, Mathf.Sin(this.rightWingInclination),
-            -Mathf.Cos(this.rightWingInclination)),
-        new Vector3(0.0f, Mathf.Sin(this.horStabInclination), -Mathf.Cos(this.horStabInclination)),
-        new Vector3(-Mathf.Sin(this.verStabInclination), 0.0f, -Mathf.Cos(this.verStabInclination))};
+        Vector3[] attackVectors =
+        {
+            new Vector3(0.0f, Mathf.Sin(this.leftWingInclination), -Mathf.Cos(this.leftWingInclination)),
+            new Vector3(0.0f, Mathf.Sin(this.rightWingInclination), -Mathf.Cos(this.rightWingInclination)),
+            new Vector3(0.0f, Mathf.Sin(this.horStabInclination), -Mathf.Cos(this.horStabInclination)),
+            new Vector3(-Mathf.Sin(this.verStabInclination), 0.0f, -Mathf.Cos(this.verStabInclination))
+        };
 
-        float[] liftSlopes = {
-        wingLiftSlope,
-        wingLiftSlope,
-        horStabLiftSlope,
-        verStabLiftSlope};
+        float[] liftSlopes = 
+        {
+            wingLiftSlope,
+            wingLiftSlope,
+            horStabLiftSlope,
+            verStabLiftSlope
+        };
 
-        Vector3 force = new Vector3(0, 0, -thrust) +
-            transform.InverseTransformVector(new Vector3(0f,this.mass * - gravity,0f));
+        Vector3 force = new Vector3(0, 0, -thrust) + transform.InverseTransformVector(new Vector3(0f,this.mass * - gravity,0f));
 
         for (int i = 0; i < liftSlopes.Length; i++)
         {
@@ -157,6 +165,7 @@ public class Drone : MonoBehaviour {
             Vector3 attackVector = attackVectors[i];
             Vector3 resPos = relAirfoilPositions[i];
             float liftSlope = liftSlopes[i];
+
             force += lift(resPos, axis, attackVector, liftSlope);
         }
 
@@ -170,30 +179,37 @@ public class Drone : MonoBehaviour {
      */
     Vector3 getTotalTorque()
     {
-        Vector3[] relAirfoilPositions = {
-        new Vector3(-wingX, 0.0f, 0.0f),
-        new Vector3(wingX, 0.0f, 0.0f),
-        new Vector3(0.0f, 0.0f, tailSize),
-        new Vector3(0.0f, 0.0f, tailSize)};
+        Vector3[] relAirfoilPositions =
+        {
+            new Vector3(-wingX, 0.0f, 0.0f),
+            new Vector3(wingX, 0.0f, 0.0f),
+            new Vector3(0.0f, 0.0f, tailSize),
+            new Vector3(0.0f, 0.0f, tailSize)
+        };
 
-        Vector3[] axes = {
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(0.0f, 1.0f, 0.0f)};
+        Vector3[] axes = 
+        {
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(1.0f, 0.0f, 0.0f),
+            new Vector3(0.0f, 1.0f, 0.0f)
+        };
 
-        Vector3[] attackVectors = {
-        new Vector3(0.0f, Mathf.Sin(this.leftWingInclination), -Mathf.Cos(this.leftWingInclination)),
-        new Vector3(0.0f, Mathf.Sin(this.rightWingInclination),
-            -Mathf.Cos(this.rightWingInclination)),
-        new Vector3(0.0f, Mathf.Sin(this.horStabInclination), -Mathf.Cos(this.horStabInclination)),
-        new Vector3(-Mathf.Sin(this.verStabInclination), 0.0f, -Mathf.Cos(this.verStabInclination))};
+        Vector3[] attackVectors =
+        {
+            new Vector3(0.0f, Mathf.Sin(this.leftWingInclination), -Mathf.Cos(this.leftWingInclination)),
+            new Vector3(0.0f, Mathf.Sin(this.rightWingInclination), -Mathf.Cos(this.rightWingInclination)),
+            new Vector3(0.0f, Mathf.Sin(this.horStabInclination), -Mathf.Cos(this.horStabInclination)),
+            new Vector3(-Mathf.Sin(this.verStabInclination), 0.0f, -Mathf.Cos(this.verStabInclination))
+        };
 
-        float[] liftSlopes = {
-        wingLiftSlope,
-        wingLiftSlope,
-        horStabLiftSlope,
-        verStabLiftSlope};
+        float[] liftSlopes = 
+        {
+            wingLiftSlope,
+            wingLiftSlope,
+            horStabLiftSlope,
+            verStabLiftSlope
+        };
 
         Vector3 totalTorque = new Vector3(0, 0, 0);
 
@@ -203,8 +219,10 @@ public class Drone : MonoBehaviour {
             Vector3 axis = axes[i];
             Vector3 attackVector = attackVectors[i];
             float liftSlope = liftSlopes[i];
+
             totalTorque += Vector3.Cross(resPos, lift(resPos, axis, attackVector, liftSlope));
         }
+
         return totalTorque;
     }
 
@@ -212,20 +230,23 @@ public class Drone : MonoBehaviour {
     {
         Vector3 lift;
         Vector3 normal = Vector3.Cross(axis, attackVector);
-        Vector3 projectedAirSpeed = orthogonalize(Vector3.Cross(this.angularV, relPos)
-            + (transform.InverseTransformVector(this.velocity)), axis);
-        float AOA = -Mathf.Atan2(Vector3.Dot(projectedAirSpeed, normal),
-            Vector3.Dot(projectedAirSpeed, attackVector));
+        Vector3 projectedAirSpeed = orthogonalize(Vector3.Cross(this.angularV, relPos) + (transform.InverseTransformVector(this.velocity)), axis);
+        float AOA = -Mathf.Atan2(Vector3.Dot(projectedAirSpeed, normal), Vector3.Dot(projectedAirSpeed, attackVector));
+
         lift = normal * (AOA * liftSlope * Mathf.Pow(projectedAirSpeed.magnitude, 2));
+
         return lift;
     }
 
     public static Vector3 orthogonalize(Vector3 v, Vector3 reff)
     {
-        if (reff.magnitude > 1.0E-6f) {
+        if (reff.magnitude > 1.0E-6f)
+        {
             reff = reff * (1.0f / reff.magnitude);
         }
+
         v = v - (reff * (Vector3.Dot(v, reff)));
+
         return v;
     }
 }
